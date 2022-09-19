@@ -20,12 +20,14 @@ import collections
 import itertools
 import operator
 import shapely.geometry
+import sys
 
 Point = collections.namedtuple("Point", ["x", "y"])
 
 width = 1190
 height = 60
 zoom = 1.5
+debug = False
 
 def drange(start, end, step):
 	start = Decimal(start)
@@ -164,7 +166,8 @@ def generate(name, border_w, border_h, sections, gap_w, func, *args):
 		w = (width - 2 * border_w) // sections - (gap_w if i < sections - 1 else 0)
 		h = height - 2 * border_h
 
-		areas.append(rect(x, y, w, h))
+		if debug:
+			areas.append(rect(x, y, w, h))
 		holes.extend(filter(None, [constrain(path, x, y, w, h) for path in func(x, y, w, h, *args)]))
 
 	paths = [points_to_path(path) for path in [overall] + areas + holes]
@@ -178,9 +181,13 @@ def generate(name, border_w, border_h, sections, gap_w, func, *args):
 			"viewBox": f"0 0 {width} {height}",
 		}, filename=f"vent-{name}.svg", openinbrowser=True)
 
-generate("squares-1", 5, 5, 5, 5, squares, 1, 1)
-generate("squares-2", 5, 5, 5, 5, squares, 1, 2)
-generate("squares-3", 6, 6, 1, 0, squares, 2, 3)
-generate("herringbone-1", 5, 5, 5, 5, herringbone, 1, 1)
-generate("herringbone-2", 5, 5, 5, 5, herringbone, 1, 2)
-generate("herringbone-3", 5, 5, 5, 5, herringbone, 2, 3)
+if __name__ == "__main__":
+	if "-d" in sys.argv:
+		debug = True
+
+	generate("squares-1", 5, 5, 5, 5, squares, 1, 1)
+	generate("squares-2", 5, 5, 5, 5, squares, 1, 2)
+	generate("squares-3", 6, 6, 1, 0, squares, 2, 3)
+	generate("herringbone-1", 5, 5, 5, 5, herringbone, 1, 1)
+	generate("herringbone-2", 5, 5, 5, 5, herringbone, 1, 2)
+	generate("herringbone-3", 5, 5, 5, 5, herringbone, 2, 3)
