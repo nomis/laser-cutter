@@ -72,7 +72,7 @@ def line_intersect(area, line):
 	if isinstance(isect, shapely.geometry.Point):
 		return [Point(isect.x, isect.y)]
 	elif isinstance(isect, shapely.geometry.MultiPoint):
-		return reversed([Point(point.x, point.y) for point in isect.geoms])
+		return [Point(point.x, point.y) for point in isect.geoms]
 	return []
 
 def polygon(points):
@@ -114,7 +114,7 @@ def constrain(points, x, y, w, h):
 			contains_next = inside(points[next_i], x1, x2, y1, y2)
 			if area is None:
 				area = rect(x, y, w, h)
-				area = shapely.geometry.LineString(area + area[0:1])
+				area = shapely.geometry.LineString(reversed(area + area[0:1]))
 			prev_line = shapely.geometry.LineString([points[prev_i], p])
 			next_line = shapely.geometry.LineString([p, points[next_i]])
 			prev_isect = line_intersect(area, prev_line)
