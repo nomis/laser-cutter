@@ -173,7 +173,7 @@ def generate(name, border_w, border_h, sections, gap_w, func, *args):
 	paths = [points_to_path(path) for path in [overall] + areas + holes]
 
 	wsvg(paths,
-			colors=["black"] + ["red"] * len(areas) + ["black"] * len(holes),
+			colors=["green"] + ["red"] * len(areas) + ["black"] * len(holes),
 			stroke_widths=[1] + [0.1] * len(areas) + [0.1] * len(holes),
 			svg_attributes={
 			"width": f"{width * zoom}px",
