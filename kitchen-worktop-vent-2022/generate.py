@@ -187,7 +187,5 @@ if __name__ == "__main__":
 
 	generate("squares-1", 5, 5, 5, 5, squares, 1, 1)
 	generate("squares-2", 5, 5, 5, 5, squares, 1, 2)
-	generate("squares-3", 6, 6, 1, 0, squares, 2, 3)
 	generate("herringbone-1", 5, 5, 5, 5, herringbone, 1, 1)
-	generate("herringbone-2", 5, 5, 5, 5, herringbone, 1, 2)
-	generate("herringbone-3", 5, 5, 5, 5, herringbone, 2, 3)
+	generate("herringbone-2", 5, 5, 5, 5, herringbone, 1.5, 2)
