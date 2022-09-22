@@ -189,10 +189,14 @@ def generate(name, border_w, border_h, sections, gap_w, func, *args):
 
 	areas = []
 	holes = []
-	for i in range(0, sections):
-		x = border_w + int(i * ((width - 2 * border_w) / sections))
+	border_w = Decimal(border_w)
+	border_h = Decimal(border_h)
+	gap_w = Decimal(gap_w)
+	w = width - 2 * border_w
+	if sections > 1:
+		w = (w - (gap_w * (sections - 1))) / sections
+	for x in drange(border_w, width - border_w, w + gap_w):
 		y = border_h
-		w = (width - 2 * border_w) // sections - (gap_w if i < sections - 1 else 0)
 		h = height - 2 * border_h
 
 		if debug:
@@ -214,8 +218,8 @@ if __name__ == "__main__":
 	if "-d" in sys.argv:
 		debug = True
 
-	generate("squares-1", 5, 5, 5, 5, squares, 1, 1)
-	generate("squares-2", 5, 5, 5, 5, squares, 1, 2)
+	generate("squares-2", 5, 5, 5, 7.5, squares, 1, 2)
 	generate("herringbone-1", 5, 5, 5, 5, herringbone, 1, 1)
 	generate("herringbone-2", 5, 5, 5, 5, herringbone, 1.5, 2)
-	generate("hexagon-3", 5, 5, 5, 5, hexagons, 1, 3, -0.5)
+#	generate("hexagon-3", 5, 5, 5, 3.75, hexagons, 1, 3, -0.5)
+	generate("hexagon-3", 5, 5, 5, 6.5, hexagons, 1, 3, -0.5)
