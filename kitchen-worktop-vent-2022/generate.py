@@ -61,6 +61,17 @@ def rect45(x, y, w, h):
 		Point(x, y + ah)
 	]
 
+def hexagon(x, y, size):
+	p = size / 4
+	return [
+		Point(x, y + p),
+		Point(x + size / 2, y),
+		Point(x + size, y + p),
+		Point(x + size, y + size - p),
+		Point(x + size / 2, y + size),
+		Point(x, y + size - p),
+	]
+
 def inside(p, x1, x2, y1, y2):
 	return p.x >= x1 and p.y >= y1 and p.x <= x2 and p.y <= y2
 
@@ -132,8 +143,8 @@ def constrain(points, x, y, w, h):
 def squares(x, y, w, h, gap, size):
 	holes = []
 
-	for r in range(y, y + h, size + gap):
-		for c in range(x, x + w, size + gap):
+	for r in drange(y, y + h, size + gap):
+		for c in drange(x, x + w, size + gap):
 			holes.append(rect(c, r, size, size))
 
 	return holes
@@ -152,6 +163,24 @@ def herringbone(x, y, w, h, gap, size):
 		for c in drange(x - x_step, x + w, x_step):
 			holes.append(rect45(c, r, rect_w, rect_h))
 			holes.append(rect45(c + aw + agap, r + ah + agap, rect_h, rect_w))
+
+	return holes
+
+def hexagons(x, y, w, h, gap, size, offset_y):
+	holes = []
+
+	x = Decimal(x)
+	y = Decimal(y) + Decimal(offset_y)
+	w = Decimal(w)
+	h = Decimal(h) - Decimal(offset_y)
+	gap = Decimal(gap)
+	size = Decimal(size)
+	y_step = size * 2 / 3 + gap
+	x_step = size + gap
+	for r in drange(y - 2 * y_step, y + h, 2 * y_step):
+		for c in drange(x - 2 * x_step, x + w, x_step):
+			holes.append(hexagon(c, r, size))
+			holes.append(hexagon(c + x_step / 2, r + y_step, size))
 
 	return holes
 
@@ -189,3 +218,4 @@ if __name__ == "__main__":
 	generate("squares-2", 5, 5, 5, 5, squares, 1, 2)
 	generate("herringbone-1", 5, 5, 5, 5, herringbone, 1, 1)
 	generate("herringbone-2", 5, 5, 5, 5, herringbone, 1.5, 2)
+	generate("hexagon-3", 5, 5, 5, 5, hexagons, 1, 3, -0.5)
