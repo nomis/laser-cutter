@@ -62,14 +62,15 @@ def rect45(x, y, w, h):
 	]
 
 def hexagon(x, y, size):
-	p = size / 4
+	offset_x = (size - (size * Decimal(3).sqrt() / 2)) / 2
+	offset_y = size / 4
 	return [
-		Point(x, y + p),
+		Point(x + offset_x, y + offset_y),
 		Point(x + size / 2, y),
-		Point(x + size, y + p),
-		Point(x + size, y + size - p),
+		Point(x + size - offset_x, y + offset_y),
+		Point(x + size - offset_x, y + size - offset_y),
 		Point(x + size / 2, y + size),
-		Point(x, y + size - p),
+		Point(x + offset_x, y + size - offset_y),
 	]
 
 def inside(p, x1, x2, y1, y2):
@@ -221,5 +222,4 @@ if __name__ == "__main__":
 	generate("squares-2", 5, 5, 5, 7.5, squares, 1, 2)
 	generate("herringbone-1", 5, 5, 5, 5, herringbone, 1, 1)
 	generate("herringbone-2", 5, 5, 5, 5, herringbone, 1.25, 2)
-#	generate("hexagon-3", 5, 5, 5, 3.75, hexagons, 1, 3, -0.5)
-	generate("hexagon-3", 5, 5, 5, 6.5, hexagons, 1, 3, -0.5)
+	generate("hexagon-3", 5, 5, 5, 6.25, hexagons, 1, 3, -0.5)
