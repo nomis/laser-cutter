@@ -24,7 +24,7 @@ import sys
 
 Point = collections.namedtuple("Point", ["x", "y"])
 
-width = 1190
+width = 1201
 height = 60
 zoom = 1.5
 debug = False
@@ -219,7 +219,7 @@ if __name__ == "__main__":
 	if "-d" in sys.argv:
 		debug = True
 
-	generate("squares-2", 5, 5, 5, 7.5, squares, 1, 2)
+	generate("squares-2", 5.5, 5, 5, 5, squares, 1, 2)
 	generate("herringbone-1", 5, 5, 5, 5, herringbone, 1, 1)
 	generate("herringbone-2", 5, 5, 5, 5, herringbone, 1.25, 2)
-	generate("hexagon-3", 5, 5, 5, 6.25, hexagons, 1, 3, -0.5)
+	generate("hexagon-3", 5, 5, 5, 4, hexagons, 1, 3, -0.5)
