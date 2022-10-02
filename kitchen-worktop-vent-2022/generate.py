@@ -39,16 +39,20 @@ def drange(start, end, step):
 def point_to_complex(p):
 	return float(p.x) + float(p.y) * 1j
 
-def points_to_path(points):
-	return Path(*[Line(point_to_complex(points[i]),
-		point_to_complex(points[i + 1 if i + 1 < len(points) else 0])) for i in range(0, len(points))])
+def points_to_path(points, join=True):
+	if join:
+		return Path(*[Line(point_to_complex(points[i]),
+			point_to_complex(points[i + 1 if i + 1 < len(points) else 0])) for i in range(0, len(points))])
+	else:
+		return Path(*[Line(point_to_complex(points[i]),
+			point_to_complex(points[i + 1])) for i in range(0, len(points) - 1)])
 
 def rect(x, y, w, h):
 	return [
 		Point(x, y),
 		Point(x + w, y),
 		Point(x + w, y + h),
-		Point(x, y + h)
+		Point(x, y + h),
 	]
 
 def rect45(x, y, w, h):
@@ -58,7 +62,32 @@ def rect45(x, y, w, h):
 		Point(x + ah, y),
 		Point(x + aw + ah, y + aw),
 		Point(x + aw, y + aw + ah),
-		Point(x, y + ah)
+		Point(x, y + ah),
+	]
+
+def splitrect(x, y, w, h):
+	sw = w // 5
+	return [
+		[
+			Point(x + sw, y + h),
+			Point(x, y + h),
+			Point(x, y),
+			Point(x + sw, y),
+		],
+		[
+			Point(x + sw, y),
+			Point(x + w - sw, y),
+		],
+		[
+			Point(x + w - sw, y),
+			Point(x + w, y),
+			Point(x + w, y + h),
+			Point(x + w - sw, y + h),
+		],
+		[
+			Point(x + w - sw, y + h),
+			Point(x + sw, y + h),
+		],
 	]
 
 def hexagon(x, y, size):
@@ -186,7 +215,7 @@ def hexagons(x, y, w, h, gap, size, offset_y):
 	return holes
 
 def generate(name, border_w, border_h, sections, gap_w, func, *args):
-	overall = rect(0, 0, width, height)
+	overall = splitrect(0, 0, width, height)
 
 	areas = []
 	holes = []
@@ -202,13 +231,14 @@ def generate(name, border_w, border_h, sections, gap_w, func, *args):
 
 		if debug:
 			areas.append(rect(x, y, w, h))
-		holes.extend(filter(None, [constrain(path, x, y, w, h) for path in func(x, y, w, h, *args)]))
+		if func:
+			holes.extend(filter(None, [constrain(path, x, y, w, h) for path in func(x, y, w, h, *args)]))
 
-	paths = [points_to_path(path) for path in [overall] + areas + holes]
+	paths = [points_to_path(path, False) for path in overall] + [points_to_path(path) for path in areas + holes]
 
 	wsvg(paths,
-			colors=["green"] + ["red"] * len(areas) + ["black"] * len(holes),
-			stroke_widths=[1] + [0.1] * len(areas) + [0.1] * len(holes),
+			colors=["green"] * len(overall) + ["red"] * len(areas) + ["black"] * len(holes),
+			stroke_widths=[1] * len(overall) + [0.1] * len(areas) + [0.1] * len(holes),
 			svg_attributes={
 			"width": f"{width * zoom}px",
 			"height": f"{height * zoom}px",
@@ -219,6 +249,7 @@ if __name__ == "__main__":
 	if "-d" in sys.argv:
 		debug = True
 
+	generate("blank", 5, 5, 5, 5, None)
 	generate("squares-2", 5.5, 5, 5, 5, squares, 1, 2)
 	generate("herringbone-1", 5, 5, 5, 5, herringbone, 1, 1)
 	generate("herringbone-2", 5, 5, 5, 5, herringbone, 1.25, 2)
